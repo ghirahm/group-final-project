@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Home() {
     return (
-        <main className="w-full flex flex-col gap-12 py-36">
+        <main className="w-full flex flex-col gap-12 mt-24 py-12">
             <section className="max-w-7xl mx-auto min-h-fit overflow-hidden">
                 <div className="w-full h-full grid grid-cols-2 bg-[var(--primary)] rounded-4xl overflow-hidden">
                     {/* Section 1 */}

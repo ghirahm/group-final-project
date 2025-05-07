@@ -16,8 +16,7 @@ export const metadata: Metadata = {
 	title: "Semesta Kata | Online Book Store",
 	description: "Semesta Kata adalah toko buku online terpercaya yang menyediakan berbagai pilihan buku berkualitas untuk memperluas wawasanmu. Temukan buku favoritmu di sini!",
 	authors: [{ name: "Semesta Kata Team" }],
-	creator: "Semesta Kata",
-	viewport: "width=device-width, initial-scale=1"
+	creator: "Semesta Kata"
 };
 
 export default function RootLayout({

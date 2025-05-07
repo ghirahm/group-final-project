@@ -2,21 +2,29 @@
 "use client"
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faShoppingCart, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import Image from "next/image";
+
+const profiles = [
+    { name: "Profile", href: "/profile" },
+    { name: "Wishlist", href: "/profile/wishlist" },
+    { name: "Cart", href: "/profile/cart" },
+    { name: "Order", href: "/profile/order" },
+    { name: "Seller Dashboard", href: "/seller" },
+]
 
 export default function Header() {
 
     return (
-        <header className="w-full h-36 bg-[var(--background)] fixed top-0 left-0 z-50">
+        <header className="w-full h-24 bg-[var(--background)] fixed top-0 left-0 z-50">
             <div className="max-w-6xl h-full mx-auto flex items-center justify-between px-6 py-12">
                 <Link href="/" className="order-1 w-fit h-full flex items-center">
                     <Image
                         src='/logo.png'
                         width={100}
                         height={100}
-                        alt='Hyundai Official Jakarta'
+                        alt='Semesta Kata'
                     />
                 </Link>
 
@@ -29,11 +37,11 @@ export default function Header() {
                         />
                     </form>
 
-                    <Link href="/wishlist" className="relative">
+                    <Link href="/profile/wishlist" className="relative">
                         <FontAwesomeIcon icon={faHeart} className="text-[var(--foreground)] hover:text-[var(--primary)] text-lg" />
                     </Link>
 
-                    <Link href="/cart" className="relative">
+                    <Link href="/profile/cart" className="relative">
                         <FontAwesomeIcon icon={faShoppingCart} className="text-[var(--foreground)] hover:text-[var(--primary)] text-lg" />
                         <span className="absolute -top-2 -right-2 bg-[var(--alert)] text-[var(--background)] text-xs rounded-full w-5 h-5 flex items-center justify-center">
                             2
@@ -42,17 +50,37 @@ export default function Header() {
 
                     <div className="flex items-center gap-2">
                         <Link
-                            href="/signin"
+                            href="/auth/signin"
                             className="text-[var(--foreground)] border-2 border-[var(--primary)] px-6 py-2 rounded-full transition-all hover:bg-[var(--primary)] hover:text-[var(--background)]"
                         >
                             Sign In
                         </Link>
                         <Link
-                            href="/signup"
+                            href="/auth/signup"
                             className="text-[var(--background)] bg-[var(--primary)] px-6 py-2 rounded-full transition-all hover:opacity-60"
                         >
                             Sign Up
                         </Link>
+                    </div>
+                    <div className="relative w-fit group">
+                        <Link
+                            href="/profile"
+                            className="flex items-center gap-2 px-6 py-2 text-[var(--foreground)] hover:bg-[var(--primary)] hover:text-[var(--background)] rounded-full transition"
+                        >
+                            <FontAwesomeIcon className="text-2xl" icon={faUserCircle} />
+                            <p className="text-sm font-medium">Ghirah</p>
+                        </Link>
+                        <ul
+                            className="absolute left-0 top-full mt-2 w-56 bg-[var(--background)] text-[var(--foreground)] rounded-xl shadow-lg p-4 flex flex-col gap-2 transition-all duration-300 ease-in-out opacity-0 -translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible z-50 border border-gray-200"
+                        >
+                            {profiles.map((profile, i) => (
+                                <Link href={profile.href} key={i}>
+                                    <p className={`w-full text-sm px-2 py-2 rounded hover:text-[var(--background)] hover:bg-[var(--primary)] transition-all ${i === profiles.length - 1 ? 'border-t border-gray-200 pt-3 mt-2' : ''}`}>
+                                        {profile.name}
+                                    </p>
+                                </Link>
+                            ))}
+                        </ul>
                     </div>
                 </nav>
             </div>

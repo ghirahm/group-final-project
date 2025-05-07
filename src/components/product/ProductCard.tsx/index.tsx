@@ -46,7 +46,7 @@ export default function ProductCard({ image, author, title, originalPrice, disco
                         Rp {formatNumber(discountedPrice)}
                     </p>
                     {calculateDiscount(originalPrice, discountedPrice) > 0 && (
-                        <div className="w-8 h-8 bg-[var(--alert)] text-white text-[6px] font-semibold rounded-full flex items-center justify-center">
+                        <div className="w-8 h-8 bg-[var(--alert)] text-[var(--background)] text-[6px] font-semibold rounded-full flex items-center justify-center">
                             {calculateDiscount(originalPrice, discountedPrice)}%<br />OFF
                         </div>
                     )}
