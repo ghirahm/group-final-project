@@ -56,7 +56,7 @@ export default function Costumer({ children }: { children: React.ReactNode }) {
                         <div className="w-full flex flex-col items-center gap-6">
                             <div className="w-36 h-36 rounded-full overflow-hidden relative">
                                 <Image
-                                    src="/product/book1.jpg"
+                                    src="/profile.jpg"
                                     alt="User Profile"
                                     fill
                                     className="object-cover"

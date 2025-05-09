@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 
 /* Icon Libraries */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboardList, faDoorOpen, faChartBar, faShop, faUser, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faClipboardList, faDoorOpen, faChartBar, faShop } from "@fortawesome/free-solid-svg-icons";
 import { faMoneyCheckDollar } from "@fortawesome/free-solid-svg-icons/faMoneyCheckDollar";
 
 import { getUserBalance } from "@/lib/api";
@@ -22,8 +22,8 @@ const sidebar = [
     { name: "Dashboard", icon: faChartBar, href: "/seller" },
     { name: "Products", icon: faShop, href: "/seller/product" },
     { name: "Orders", icon: faClipboardList, href: "/seller/order" },
-    { name: "Customer", icon: faUser, href: "/seller/customer" },
-    { name: "Reviews", icon: faStar, href: "/seller/review" }
+    /* { name: "Customer", icon: faUser, href: "/seller/customer" },
+    { name: "Reviews", icon: faStar, href: "/seller/review" } */
 ];
 
 export default function Seller({ children }: { children: React.ReactNode }) {
@@ -54,7 +54,7 @@ export default function Seller({ children }: { children: React.ReactNode }) {
                         <div className="w-full flex flex-col items-center gap-6">
                             <div className="w-36 h-36 rounded-full overflow-hidden relative">
                                 <Image
-                                    src="/product/book1.jpg"
+                                    src="/profile.jpg"
                                     alt="User Profile"
                                     fill
                                     className="object-cover"

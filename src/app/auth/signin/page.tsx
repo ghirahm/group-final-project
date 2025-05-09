@@ -109,7 +109,7 @@ export default function LoginForm() {
                         <button
                             type="button"
                             onClick={handleTogglePassword}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
                             aria-label="Toggle password visibility"
                         >
                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -127,7 +127,7 @@ export default function LoginForm() {
                 </form>
 
                 <p className="text-sm text-[var(--foreground)] mt-4 text-center">
-                    New Here? <a href="/signup" className="text-[var(--primary)] font-semibold cursor-pointer">Sign Up</a>
+                    New Here? <a href="/auth/signup" className="text-[var(--primary)] font-semibold cursor-pointer">Sign Up</a>
                 </p>
             </div>
         </section>

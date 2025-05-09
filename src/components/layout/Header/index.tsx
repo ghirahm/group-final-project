@@ -1,5 +1,7 @@
 "use client"
 
+import { useState, useEffect } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faShoppingCart, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -16,8 +18,44 @@ const profiles = [
     { name: "Seller Dashboard", href: "/seller" },
 ]
 
+interface User {
+    "full_name": string
+}
+
 export default function Header() {
+    const [user, setUser] = useState<User | null>(null);
     const { isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const token = localStorage.getItem('accessToken');
+                if (!token) throw new Error('No access token found');
+
+                const res = await fetch('https://finalprojectbackend-production-9a18.up.railway.app/api/v1/users/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!res.ok) {
+                    const error = await res.json().catch(() => ({}));
+                    console.error("Error Response:", error);
+                    throw new Error(error.message || 'Failed to fetch referral');
+                }
+
+                const data = await res.json();
+                console.log("Me: ", data)
+
+                setUser(data.data)
+
+            } catch (err) {
+                console.error("Fetch referral error:", err);
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     return (
         <header className="w-full h-24 bg-[var(--background)] fixed top-0 left-0 z-50">
@@ -32,13 +70,13 @@ export default function Header() {
                 </Link>
 
                 <nav className="order-2 flex items-center gap-6">
-                    <form className="relative">
+                    {/* <form className="relative">
                         <input
                             type="text"
                             placeholder="Search Product..."
                             className="border border-gray-300 rounded-full px-4 py-2 w-64 focus:outline-none focus:ring-1 focus:ring-[var(--primary)]"
                         />
-                    </form>
+                    </form> */}
 
                     <Link href="/profile/wishlist" className="relative">
                         <FontAwesomeIcon icon={faHeart} className="text-[var(--foreground)] hover:text-[var(--primary)] text-lg" />
@@ -74,7 +112,7 @@ export default function Header() {
                                     className="flex items-center gap-2 px-6 py-2 text-[var(--foreground)] hover:bg-[var(--primary)] hover:text-[var(--background)] rounded-full transition"
                                 >
                                     <FontAwesomeIcon className="text-2xl" icon={faUserCircle} />
-                                    <p className="text-sm font-medium">Ghirah</p>
+                                    <p className="text-sm font-medium">{user?.full_name}</p>
                                 </Link>
                                 <ul
                                     className="absolute left-0 top-full mt-2 w-56 bg-[var(--background)] text-[var(--foreground)] rounded-xl shadow-lg p-4 flex flex-col gap-2 transition-all duration-300 ease-in-out opacity-0 -translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible z-50 border border-gray-200"

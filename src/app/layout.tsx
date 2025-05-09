@@ -8,6 +8,7 @@ import Footer from "@/components/layout/Footer";
 
 import { Poppins } from 'next/font/google';
 import { AuthProvider } from "@/context/AuthContext";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 
 const poppins = Poppins({
 	subsets: ['latin'],
@@ -30,6 +31,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${poppins.variable} antialiased`} cz-shortcut-listen="true">
+				<ScrollToTop />
 				<AuthProvider>
 					<BookProvider >
 						<Header />

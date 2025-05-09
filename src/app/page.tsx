@@ -2,7 +2,7 @@
 
 import { useBooks } from "@/context/BookContext";
 
-import ProductCard from "@/components/product/ProductCard.tsx";
+import ProductCard from "@/components/product/ProductCard";
 import ImageHero from "@/components/ui/ImageHero";
 
 import { faFilter, faShop, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";

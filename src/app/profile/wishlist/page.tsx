@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 import CustomerHeader from "@/components/ui/CustomerHeader";
-import ProductCard from '@/components/product/ProductCard.tsx';
+import ProductCard from '@/components/product/ProductCard';
 
 interface WishlistItem {
     id: number;

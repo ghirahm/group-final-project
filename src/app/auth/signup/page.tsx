@@ -255,7 +255,7 @@ export default function RegistrationForm() {
                         <button
                             type="button"
                             onClick={() => setShowPassword((prev) => !prev)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"
                             aria-label="Toggle password visibility"
                         >
                             <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
@@ -276,7 +276,7 @@ export default function RegistrationForm() {
                         <button
                             type="button"
                             onClick={() => setShowConfirmPassword((prev) => !prev)}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400  cursor-pointer"
                             aria-label="Toggle password visibility"
                         >
                             <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
@@ -345,7 +345,7 @@ export default function RegistrationForm() {
 
                     <p className="text-sm text-[var(--foreground)] mt-4 text-center">
                         Have an account?{" "}
-                        <a href="#" className="text-[var(--primary)] font-semibold cursor-pointer">
+                        <a href="/auth/sigin" className="text-[var(--primary)] font-semibold cursor-pointer">
                             Sign In
                         </a>
                     </p>

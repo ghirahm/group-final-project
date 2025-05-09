@@ -25,14 +25,14 @@ export async function getBooksByCategory(category: string) {
     const result = await res.json();
     return result.data.books;
 }
-
+/* 
 function getAuthHeaders() {
     const token = localStorage.getItem('accessToken');
     return {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
     };
-}
+} */
 
 export async function getUserProfile() {
     const token = localStorage.getItem('accessToken');
@@ -52,7 +52,7 @@ export async function getUserBalance() {
 
     const res = await fetch('https://finalprojectbackend-production-9a18.up.railway.app/api/v1/users/balance', {
         headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
         },
     });
@@ -67,9 +67,22 @@ export async function getUserBalance() {
 }
 
 export async function getUserReferral() {
-    const res = await fetch(`${BASE_URL}/api/v1/users/referral`, {
-        headers: getAuthHeaders(),
+    const token = localStorage.getItem('accessToken');
+    if (!token) throw new Error('No access token found');
+
+    console.log(token)
+
+    const res = await fetch('https://finalprojectbackend-production-9a18.up.railway.app/api/v1/users/referral', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
     });
-    if (!res.ok) throw new Error('Failed to fetch referral info');
+
+    if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
+        console.error("Error Response:", error);
+        throw new Error(error.message || 'Failed to fetch user balance');
+    }
+
     return res.json();
 }

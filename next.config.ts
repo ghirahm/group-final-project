@@ -15,9 +15,13 @@ const nextConfig: NextConfig = {
         destination: "https://finalprojectbackend-production-9a18.up.railway.app/api/v1/locations/",
       },
       {
-        source: "/api/location",
-        destination: "https://finalprojectbackend-production-9a18.up.railway.app/api/v1/locations",
+        source: "/api/locations/:id",
+        destination: "https://finalprojectbackend-production-9a18.up.railway.app/api/v1/locations/:id",
       },
+      {
+        source: "/api/transactions",
+        destination: "https://finalprojectbackend-production-9a18.up.railway.app/api/v1/transactions"
+      }
     ];
   },
 };

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faCartShopping, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faHeart } from "@fortawesome/free-solid-svg-icons";
 import Link from 'next/link';
 
 interface ProductCardProps {
@@ -89,12 +89,12 @@ export default function ProductCard({ id, image, author, title, originalPrice, d
                     <div className="flex w-full gap-2 mt-4">
                         <Link
                             href={`/product/${id}`}
-                            className="w-fit px-4 py-2 border border-[var(--primary)] text-[var(--primary)] rounded-lg hover:bg-[var(--primary)] hover:text-[var(--background)] transition text-sm flex flex-row items-center justify-center gap-2 cursor-pointer">
+                            className="w-full px-4 py-2 border border-[var(--primary)] text-[var(--primary)] rounded-lg hover:bg-[var(--primary)] hover:text-[var(--background)] transition text-sm flex flex-row items-center justify-center gap-2 cursor-pointer">
                             Details <FontAwesomeIcon icon={faArrowRight} className="text-sm -rotate-45" />
                         </Link>
-                        <button className="w-full px-4 py-2 bg-[var(--primary)] text-[var(--background)] rounded-lg hover:opacity-60 transition text-sm flex flex-row items-center justify-center gap-2 cursor-pointer">
+                        {/* <button className="w-full px-4 py-2 bg-[var(--primary)] text-[var(--background)] rounded-lg hover:opacity-60 transition text-sm flex flex-row items-center justify-center gap-2 cursor-pointer">
                             Add to Cart <FontAwesomeIcon icon={faCartShopping} className="text-sm" />
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>
