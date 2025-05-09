@@ -7,6 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 import { Poppins } from 'next/font/google';
+import { AuthProvider } from "@/context/AuthContext";
 
 const poppins = Poppins({
 	subsets: ['latin'],
@@ -29,11 +30,13 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${poppins.variable} antialiased`} cz-shortcut-listen="true">
-				<BookProvider >
-					<Header />
-					{children}
-					<Footer />
-				</BookProvider>
+				<AuthProvider>
+					<BookProvider >
+						<Header />
+						{children}
+						<Footer />
+					</BookProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

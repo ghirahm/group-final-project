@@ -7,7 +7,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 import { getUserBalance } from "@/lib/api";
-import { handleLogout } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
 
 /* Icon Libraries */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,6 +30,8 @@ export default function Costumer({ children }: { children: React.ReactNode }) {
     const [balance, setBalance] = useState<Balance | null>(null);
     const [error, setError] = useState<string | null>();
     const pathname = usePathname();
+
+    const { logout } = useAuth();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -90,7 +92,7 @@ export default function Costumer({ children }: { children: React.ReactNode }) {
                     <div className="w-full flex flex-col items-start gap-2">
 
                         <button
-                            onClick={handleLogout}
+                            onClick={logout}
                             className="w-full flex items-center gap-6 px-4 py-2 rounded-lg text-md font-semibold transition group text-[var(--foreground)] hover:bg-[var(--alert)] hover:text-[var(--background)] cursor-pointer"
                         >
                             <div className="w-8 h-8 bg-[var(--secondary)] group-hover:bg-[var(--background)] flex items-center justify-center rounded-lg">

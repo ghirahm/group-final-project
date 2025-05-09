@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faShoppingCart, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Link from "next/link";
 import Image from "next/image";
+
+import { useAuth } from '@/context/AuthContext';
 
 const profiles = [
     { name: "Profile", href: "/profile" },
@@ -17,27 +17,7 @@ const profiles = [
 ]
 
 export default function Header() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const checkLogin = () => {
-            const token = localStorage.getItem("accessToken");
-            setIsLoggedIn(!!token);
-        };
-
-        checkLogin();
-
-        const handleStorageChange = () => checkLogin();
-        const handleAuthChange = () => checkLogin();
-
-        window.addEventListener("storage", handleStorageChange);
-        window.addEventListener("authChange", handleAuthChange);
-
-        return () => {
-            window.removeEventListener("storage", handleStorageChange);
-            window.removeEventListener("authChange", handleAuthChange);
-        };
-    }, []);
+    const { isAuthenticated } = useAuth();
 
     return (
         <header className="w-full h-24 bg-[var(--background)] fixed top-0 left-0 z-50">
@@ -72,7 +52,7 @@ export default function Header() {
                     </Link>
 
                     <div className="relative w-fit group">
-                        {!isLoggedIn ? (
+                        {!isAuthenticated ? (
                             <div className="flex items-center gap-2">
                                 <Link
                                     href="/auth/signin"

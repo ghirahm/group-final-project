@@ -1,6 +1,6 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react";
+import { useBooks } from "@/context/BookContext";
 
 import ProductCard from "@/components/product/ProductCard.tsx";
 import ImageHero from "@/components/ui/ImageHero";
@@ -8,74 +8,11 @@ import ImageHero from "@/components/ui/ImageHero";
 import { faFilter, faShop, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { getBooks, getCategories, getBooksByCategory } from '@/lib/api';
-import { handleLogout } from "@/lib/auth";
-
-interface Book {
-    id: number;
-    title: string;
-    author_name: string;
-    image_url_1: string;
-    price: number;
-    discount_percent: number;
-}
-
 export default function Home() {
-    const [books, setBooks] = useState<Book[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { books, categories, loading, error } = useBooks();
 
-    useEffect(() => {
-        const fetchBooksAndCategories = async () => {
-            try {
-                const [bookData, categoryData] = await Promise.all([
-                    getBooks(),
-                    getCategories()
-                ]);
-                setBooks(bookData);
-                setCategories(categoryData.map((cat: any) => cat.name));
-            } catch (err: any) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchBooksAndCategories();
-    }, []);
-
-    useEffect(() => {
-        const loginTime = localStorage.getItem("loginTime");
-        if (!loginTime) return;
-
-        const oneHour = 60 * 60 * 1000;
-        const timePassed = Date.now() - parseInt(loginTime);
-        const timeLeft = oneHour - timePassed;
-
-        if (timeLeft <= 0) {
-
-        } else {
-            const timer = setTimeout(() => handleLogout(), timeLeft);
-            return () => clearTimeout(timer);
-        }
-    }, []);
-
-    const handleCategoryClick = async (category: string) => {
-        try {
-            setLoading(true);
-            const filteredBooks = await getBooksByCategory(category);
-            console.log(filteredBooks)
-            setBooks(filteredBooks);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p className="text-[var(--alert)]">Error: {error}</p>;
+    if (loading) return <p className="p-6">Loading books...</p>;
+    if (error) return <p className="text-[var(--alert)] p-6">Error: {error}</p>;
 
     return (
         <main className="w-full flex flex-col gap-12 mt-24 py-12">
@@ -122,12 +59,10 @@ export default function Home() {
                                         key={i}
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            handleCategoryClick(category)
                                         }}
-
                                         className="text-sm text-left px-4 py-2 rounded-lg hover:bg-[var(--primary)] hover:text-white transition"
                                     >
-                                        {category}
+                                        {category.name}
                                     </button>
                                 ))}
                             </div>
@@ -137,9 +72,7 @@ export default function Home() {
 
                 <div className="w-full grid grid-cols-4 gap-6">
                     <div className="col-span-1 flex flex-col items-center justify-between bg-[var(--secondary)] p-6 rounded-2xl h-[360px]">
-                        <div className="">
-                            <h2 className="text-6xl font-bold mb-4 text-left text-[var(--primary)]">New Arrivals</h2>
-                        </div>
+                        <h2 className="text-6xl font-bold mb-4 text-left text-[var(--primary)]">New Arrivals</h2>
                         <div className="w-full h-fit flex items-center justify-end">
                             <button className="w-12 h-12 flex items-center justify-center bg-[var(--primary)] text-white rounded-full hover:bg-opacity-80 transition">
                                 <FontAwesomeIcon icon={faArrowAltCircleRight} className="text-md text-[var(--background)]" />
@@ -148,22 +81,20 @@ export default function Home() {
                     </div>
 
                     <div className="col-span-3 grid grid-cols-3 gap-6">
-                        {books.map((book) => {
-                            return (
-                                <ProductCard
-                                    key={book.id}
-                                    id={book.id}
-                                    image={book.image_url_1}
-                                    author={book.author_name}
-                                    title={book.title}
-                                    originalPrice={book.price}
-                                    discountedPercent={book.discount_percent}
-                                />
-                            )
-                        })}
+                        {books.map((book) => (
+                            <ProductCard
+                                key={book.id}
+                                id={book.id}
+                                image={book.image_url_1}
+                                author={book.author_name}
+                                title={book.title}
+                                originalPrice={book.price}
+                                discountedPercent={book.discount_percent}
+                            />
+                        ))}
                     </div>
                 </div>
             </section>
-        </main >
+        </main>
     );
 }

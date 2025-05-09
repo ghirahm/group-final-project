@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 /* Icon Libraries */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faSave, faEdit, faLocation, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faSave, faEdit, faLocation, faStar, faPlus } from "@fortawesome/free-solid-svg-icons";
 import CustomerHeader from '@/components/ui/CustomerHeader';
 
 interface City {
@@ -24,7 +24,7 @@ export default function ProfilePage() {
         const fetchCities = async () => {
             try {
                 const token = localStorage.getItem("accessToken");
-                const res = await fetch("https://cors-anywhere.herokuapp.com/https://finalprojectbackend-production-9a18.up.railway.app/api/v1/cities", {
+                const res = await fetch("/api/cities", {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -40,18 +40,20 @@ export default function ProfilePage() {
         fetchCities();
     }, []);
 
-    const handleCityChange = (cityName: string) => {
-        const selected = cities.find((c) => c.name === cityName);
+    /* const handleCityChange = (cityId: number) => {
+        const selected = cities.find((c) => c.id === cityId);
         if (selected) {
+            handleChangeLocation("city_id", selected.id);
             handleChangeLocation("city", selected.name);
             handleChangeLocation("state", selected.state_name);
             handleChangeLocation("country", selected.country_name);
         } else {
+            handleChangeLocation("city_id", null);
             handleChangeLocation("city", "");
             handleChangeLocation("state", "");
-            handleChangeLocation("country", "");
+            handleChangeLocation("country", ""); 
         }
-    };
+    }; */
     console.log(cities)
 
     const [formData, setFormData] = useState({
@@ -61,22 +63,74 @@ export default function ProfilePage() {
         email: 'ghirah@example.com'
     });
 
-    const [formLocation, setFormLocation] = useState({
-        country: '',
-        state: '',
-        city: '',
-        name: '',
-        address: '',
-        zip_code: ''
+    const [formLocation, setFormLocation] = useState<{
+        city_id: number;
+        name: string;
+        address: string;
+        zip_code: string;
+    }>({
+        city_id: 0,
+        name: "",
+        address: "",
+        zip_code: "",
     });
 
     const handleChange = (field: string, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleChangeLocation = (field: string, value: string) => {
+    const handleChangeLocation = (field: string, value: string | number) => {
         setFormLocation((prev) => ({ ...prev, [field]: value }));
     };
+
+    const handleSaveLocation = async () => {
+        const token = localStorage.getItem("accessToken");
+        console.log(formLocation);
+        try {
+            const res = await fetch("/api/locations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(formLocation),
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                alert("Location saved!");
+            } else {
+                alert("Error: " + data.message);
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Failed to save location.");
+        }
+    };
+
+    useEffect(() => {
+        const fetchLocation = async () => {
+            try {
+                const token = localStorage.getItem("accessToken");
+                const res = await fetch("/api/location", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    setFormLocation(data.data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch location:", err);
+            }
+        };
+
+        fetchLocation();
+    }, []);
+
+
+
 
     return (
         <section className='flex flex-col gap-6 min-h-screen'>
@@ -124,107 +178,78 @@ export default function ProfilePage() {
             </div>
 
             <CustomerHeader title='Address*' icon={faLocation} />
-            <div className="grid grid-cols-2 gap-6">
-                {/* City */}
-                <div className='w-full space-y-2'>
-                    <p className="text-sm font-semibold text-[var(--primary)]">City</p>
-                    {isEditingLocation ? (
+            <div className="col-span-2 w-full flex justify-end">
+                <button
+                    type="submit"
+                    className="w-fit bg-[var(--primary)] text-sm font-medium flex items-center gap-2 px-6 py-2 rounded-lg text-[var(--background)] hover:opacity-60"
+                >
+                    <FontAwesomeIcon icon={faPlus} className="text-xl" />
+                    Create Location
+                </button>
+            </div>
+            {
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleSaveLocation();
+                    }}
+                    className="grid grid-cols-2 gap-6"
+                >
+                    <div className='w-full space-y-2'>
+                        <p className="text-sm font-semibold text-[var(--primary)]">City</p>
                         <select
-                            value={formLocation.city}
-                            onChange={(e) => handleCityChange(e.target.value)}
+                            value={formLocation.city_id}
+                            onChange={(e) => handleChangeLocation('city_id', Number(e.target.value))}
                             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                         >
                             <option value="">Select City</option>
                             {cities.map((city) => (
-                                <option key={city.id} value={city.name}>
+                                <option key={city.id} value={city.id}>
                                     {city.name}
                                 </option>
                             ))}
                         </select>
-                    ) : (
-                        <p className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[var(--foreground)]">
-                            {formLocation.city || "—"}
-                        </p>
-                    )}
-                </div>
-
-                {formLocation.state && (
-                    <div className='w-full space-y-2'>
-                        <p className="text-sm font-semibold text-[var(--primary)]">State</p>
-                        {isEditingLocation ? (
-                            <p
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                            >{formLocation.state}</p>
-                        ) : (
-                            <p className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[var(--foreground)]">{formLocation.state || "-"}</p>
-                        )}
                     </div>
-                )}
 
-                {formLocation.country && (
                     <div className='w-full space-y-2'>
-                        <p className="text-sm font-semibold text-[var(--primary)]">Country</p>
-                        {isEditingLocation ? (
-                            <p
-                                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
-                            >{formLocation.country}</p>
-                        ) : (
-                            <p className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[var(--foreground)]">{formLocation.country || "—"}</p>
-                        )}
-                    </div>
-                )}
-
-                <div className='w-full space-y-2'>
-                    <p className="text-sm font-semibold text-[var(--primary)]">Name</p>
-                    {isEditingLocation ? (
+                        <p className="text-sm font-semibold text-[var(--primary)]">Name</p>
                         <input
                             type="text"
                             value={formLocation.name}
                             onChange={(e) => handleChangeLocation('name', e.target.value)}
                             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                         />
-                    ) : (
-                        <p className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[var(--foreground)]">{formLocation.name || "—"}</p>
-                    )}
-                </div>
+                    </div>
 
-                <div className='w-full space-y-2'>
-                    <p className="text-sm font-semibold text-[var(--primary)]">Address</p>
-                    {isEditingLocation ? (
+                    <div className='w-full space-y-2'>
+                        <p className="text-sm font-semibold text-[var(--primary)]">Address</p>
                         <input
                             type="text"
                             value={formLocation.address}
                             onChange={(e) => handleChangeLocation('address', e.target.value)}
                             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                         />
-                    ) : (
-                        <p className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[var(--foreground)]">{formLocation.address || "—"}</p>
-                    )}
-                </div>
+                    </div>
 
-                <div className='w-full space-y-2'>
-                    <p className="text-sm font-semibold text-[var(--primary)]">Zip Code</p>
-                    {isEditingLocation ? (
+                    <div className='w-full space-y-2'>
+                        <p className="text-sm font-semibold text-[var(--primary)]">Zip Code</p>
                         <input
                             type="text"
                             value={formLocation.zip_code}
                             onChange={(e) => handleChangeLocation('zip_code', e.target.value)}
                             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
                         />
-                    ) : (
-                        <p className="w-full border border-gray-300 rounded-lg px-4 py-3 text-[var(--foreground)]">{formLocation.zip_code || "—"}</p>
-                    )}
-                </div>
-            </div>
-            <div className='w-full flex flex-row items-center justify-end'>
-                <button
-                    onClick={() => setIsEditingLocation(!isEditingLocation)}
-                    className="w-fit bg-[var(--primary)] text-sm font-medium flex flex-row items-center gap-2 px-6 py-2 rounded-lg text-[var(--background)] hover:opacity-60 cursor-pointer"
-                >
-                    <FontAwesomeIcon icon={isEditingLocation ? faSave : faEdit} className='text-xl' />
-                    {isEditingLocation ? 'Save' : 'Edit'}
-                </button>
-            </div>
+                    </div>
+                    <div className="col-span-2 w-full flex justify-end">
+                        <button
+                            type="submit"
+                            className="w-fit bg-[var(--primary)] text-sm font-medium flex items-center gap-2 px-6 py-2 rounded-lg text-[var(--background)] hover:opacity-60"
+                        >
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            }
 
             <CustomerHeader title='Referral' icon={faStar} />
         </section >

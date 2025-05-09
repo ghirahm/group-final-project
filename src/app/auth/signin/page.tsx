@@ -1,9 +1,7 @@
-
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -13,25 +11,23 @@ import ErrorText from "@/components/ui/ErrorText.tsx";
 
 import { emailPattern } from "@/app/utils/validation";
 
+import { useAuth } from "@/context/AuthContext";
+
 export default function LoginForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-    const [status, setStatus] = useState<"success" | "error" | null>(null);
-    const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const router = useRouter();
+    const { login, status, alertMessage, setStatus, setAlertMessage } = useAuth();
 
     const handleTogglePassword = () => setShowPassword((prev) => !prev);
 
     const validate = () => {
         const newErrors: typeof errors = {};
-
         if (!emailPattern.test(email.trim())) newErrors.email = "Please enter a valid email address.";
         if (password.trim().length < 6) newErrors.password = "Password must be at least 6 characters.";
-
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -39,43 +35,14 @@ export default function LoginForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validate()) return;
-
         setIsLoading(true);
 
         try {
-            const res = await fetch("https://finalprojectbackend-production-9a18.up.railway.app/api/v1/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                setStatus("success");
-                setAlertMessage("Login Successful!");
-
-                const { access_token, refresh_token } = data.data;
-
-                localStorage.setItem("accessToken", access_token);
-                localStorage.setItem("refreshToken", refresh_token);
-                localStorage.setItem("loginTime", Date.now().toString());
-
-                window.dispatchEvent(new Event("authChange"));
-
-                setEmail("");
-                setPassword("");
-
-                setTimeout(() => {
-                    router.push('/');
-                }, 1000);
-            } else {
-                setStatus("error");
-                setAlertMessage(data.message || "Login Failed");
-            }
-        } catch (err: any) {
-            setStatus("error");
-            setAlertMessage(err.message || "Server Error");
+            await login(email, password);
+            setEmail("");
+            setPassword("");
+        } catch (err) {
+            console.error("Login failed", err);
         } finally {
             setIsLoading(false);
         }
@@ -94,7 +61,7 @@ export default function LoginForm() {
                 />
             )}
 
-            {/* LEFT */}
+            {/* LEFT SIDE */}
             <div className="relative w-full min-h-screen overflow-hidden flex px-12 items-start justify-start">
                 <div className="text-left">
                     <h1 className="font-black text-[var(--background)] text-7xl">
