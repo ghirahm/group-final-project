@@ -1,3 +1,8 @@
+interface Category {
+    id: number;
+    name: string;
+}
+
 export interface Book {
     id: number;
     title: string;
@@ -7,4 +12,6 @@ export interface Book {
     price: number;
     discount_percent: number;
     description: string;
+    stock: number;
+    categories?: Category[];
 }
