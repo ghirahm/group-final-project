@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { BookProvider } from "@/context/BookContext";
+
 import Header from "@/components/layout/Header";
-import { Poppins } from 'next/font/google';
 import Footer from "@/components/layout/Footer";
+
+import { Poppins } from 'next/font/google';
 
 const poppins = Poppins({
 	subsets: ['latin'],
 	weight: ['400', '500', '600', '700'],
 	variable: '--font-poppins',
 })
-
 
 export const metadata: Metadata = {
 	title: "Semesta Kata | Online Book Store",
@@ -27,9 +29,11 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<body className={`${poppins.variable} antialiased`} cz-shortcut-listen="true">
-				<Header />
-				{children}
-				<Footer />
+				<BookProvider >
+					<Header />
+					{children}
+					<Footer />
+				</BookProvider>
 			</body>
 		</html>
 	);

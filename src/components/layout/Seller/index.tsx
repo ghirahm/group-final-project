@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from "react";
+
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -8,6 +10,13 @@ import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboardList, faDoorOpen, faChartBar, faShop, faUser, faStar } from "@fortawesome/free-solid-svg-icons";
 import { faMoneyCheckDollar } from "@fortawesome/free-solid-svg-icons/faMoneyCheckDollar";
+
+import { getUserBalance } from "@/lib/api";
+
+interface Balance {
+    balance: number,
+    full_name: string
+}
 
 const sidebar = [
     { name: "Dashboard", icon: faChartBar, href: "/seller" },
@@ -18,7 +27,24 @@ const sidebar = [
 ];
 
 export default function Seller({ children }: { children: React.ReactNode }) {
+    const [balance, setBalance] = useState<Balance | null>(null);
+    const [error, setError] = useState<string | null>();
     const pathname = usePathname();
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const balanceData = await getUserBalance();
+                setBalance(balanceData.data);
+            } catch (error: any) {
+                setError(error.message)
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    console.log(error);
 
     return (
         <div className="max-w-8xl mx-auto min-h-screen bg-[var(--background)] mt-24 py-12 px-12 grid grid-cols-4 gap-12">
@@ -36,8 +62,8 @@ export default function Seller({ children }: { children: React.ReactNode }) {
                                     priority
                                 />
                             </div>
-                            <h2 className="text-xl font-semibold px-6 py-2 border-2 border-[var(--primary)] rounded-full">Ghirah Madani</h2>
-                            <p className="text-sm flex flex-row items-center gap-2"><FontAwesomeIcon icon={faMoneyCheckDollar} className="text-sm" />Balance: <span className="font-bold">150.000</span></p>
+                            <h2 className="text-xl font-semibold px-6 py-2 border-2 border-[var(--primary)] rounded-full">{balance?.full_name}</h2>
+                            <p className="text-sm flex flex-row items-center gap-2"><FontAwesomeIcon icon={faMoneyCheckDollar} className="text-sm" />Balance: <span className="font-bold">{balance?.balance}</span></p>
                         </div>
 
                         <div className="w-full flex flex-col items-start gap-2">

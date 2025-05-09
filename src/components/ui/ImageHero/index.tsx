@@ -30,7 +30,7 @@ export default function ImageHero() {
     return (
         <div className="order-2 col-span-1 flex justify-center items-center relative w-full h-[400px] overflow-hidden">
             {/* Circle Background */}
-            <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 w-[36rem] h-[36rem] bg-[var(--secondary)] rounded-full z-0"></div>
+            <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 w-[36rem] h-[36rem] bg-[var(--secondary)] rounded-full z-0 pointer-events-none"></div>
 
             {/* Image */}
             <img

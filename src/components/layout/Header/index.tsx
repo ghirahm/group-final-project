@@ -1,8 +1,10 @@
-
 "use client"
+
+import { useEffect, useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faShoppingCart, faUserCircle } from "@fortawesome/free-solid-svg-icons";
+
 import Link from "next/link";
 import Image from "next/image";
 
@@ -15,6 +17,27 @@ const profiles = [
 ]
 
 export default function Header() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const checkLogin = () => {
+            const token = localStorage.getItem("accessToken");
+            setIsLoggedIn(!!token);
+        };
+
+        checkLogin();
+
+        const handleStorageChange = () => checkLogin();
+        const handleAuthChange = () => checkLogin();
+
+        window.addEventListener("storage", handleStorageChange);
+        window.addEventListener("authChange", handleAuthChange);
+
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+            window.removeEventListener("authChange", handleAuthChange);
+        };
+    }, []);
 
     return (
         <header className="w-full h-24 bg-[var(--background)] fixed top-0 left-0 z-50">
@@ -48,7 +71,47 @@ export default function Header() {
                         </span>
                     </Link>
 
-                    <div className="flex items-center gap-2">
+                    <div className="relative w-fit group">
+                        {!isLoggedIn ? (
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href="/auth/signin"
+                                    className="text-[var(--foreground)] border-2 border-[var(--primary)] px-6 py-2 rounded-full transition-all hover:bg-[var(--primary)] hover:text-[var(--background)]"
+                                >
+                                    Sign In
+                                </Link>
+                                <Link
+                                    href="/auth/signup"
+                                    className="text-[var(--background)] bg-[var(--primary)] px-6 py-2 rounded-full transition-all hover:opacity-60"
+                                >
+                                    Sign Up
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="relative w-fit group">
+                                <Link
+                                    href="/profile"
+                                    className="flex items-center gap-2 px-6 py-2 text-[var(--foreground)] hover:bg-[var(--primary)] hover:text-[var(--background)] rounded-full transition"
+                                >
+                                    <FontAwesomeIcon className="text-2xl" icon={faUserCircle} />
+                                    <p className="text-sm font-medium">Ghirah</p>
+                                </Link>
+                                <ul
+                                    className="absolute left-0 top-full mt-2 w-56 bg-[var(--background)] text-[var(--foreground)] rounded-xl shadow-lg p-4 flex flex-col gap-2 transition-all duration-300 ease-in-out opacity-0 -translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible z-50 border border-gray-200"
+                                >
+                                    {profiles.map((profile, i) => (
+                                        <Link href={profile.href} key={i}>
+                                            <p className={`w-full text-sm px-2 py-2 rounded hover:text-[var(--background)] hover:bg-[var(--primary)] transition-all ${i === profiles.length - 1 ? 'border-t border-gray-200 pt-3 mt-2' : ''}`}>
+                                                {profile.name}
+                                            </p>
+                                        </Link>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* <div className="flex items-center gap-2">
                         <Link
                             href="/auth/signin"
                             className="text-[var(--foreground)] border-2 border-[var(--primary)] px-6 py-2 rounded-full transition-all hover:bg-[var(--primary)] hover:text-[var(--background)]"
@@ -81,7 +144,7 @@ export default function Header() {
                                 </Link>
                             ))}
                         </ul>
-                    </div>
+                    </div> */}
                 </nav>
             </div>
         </header>
