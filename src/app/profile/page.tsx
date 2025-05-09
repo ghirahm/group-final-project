@@ -118,6 +118,7 @@ export default function ProfilePage() {
                     },
                 });
                 const data = await res.json();
+                console.log(data)
                 if (res.ok) {
                     setFormLocation(data.data);
                 }

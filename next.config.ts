@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         source: "/api/locations",
         destination: "https://finalprojectbackend-production-9a18.up.railway.app/api/v1/locations/",
       },
+      {
+        source: "/api/location",
+        destination: "https://finalprojectbackend-production-9a18.up.railway.app/api/v1/locations",
+      },
     ];
   },
 };
