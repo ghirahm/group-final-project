@@ -6,19 +6,11 @@ import SellerHeader from '@/components/ui/SellerHeader';
 import { faPlusCircle, faShop } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useBooks } from '@/context/BookContext';
-
-interface Product {
-    id: number;
-    title: string;
-    image_url_1: string;
-    categories: { name: string }[];
-    price: number;
-    stock: number;
-}
+import { Book } from '@/types/book';
 
 export default function Products() {
     const { fetchMyBooks } = useBooks();
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<Book[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

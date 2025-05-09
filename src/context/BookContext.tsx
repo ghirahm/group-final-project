@@ -16,7 +16,7 @@ interface BookContextType {
     error: string | null;
     fetchCategories: () => Promise<void>;
     refreshBooks: () => Promise<void>;
-    fetchMyBooks: () => Promise<void>;
+    fetchMyBooks: () => Promise<Book[] | null>;
 }
 
 const BookContext = createContext<BookContextType>({
@@ -26,7 +26,9 @@ const BookContext = createContext<BookContextType>({
     error: null,
     fetchCategories: async () => { },
     refreshBooks: async () => { },
-    fetchMyBooks: async () => { },
+    fetchMyBooks: async () => {
+        return null;
+    },
 });
 
 export const useBooks = () => useContext(BookContext);
@@ -62,7 +64,7 @@ export function BookProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    const fetchMyBooks = async () => {
+    const fetchMyBooks = async (): Promise<Book[] | null> => {
         try {
             const token = localStorage.getItem('accessToken');
             if (!token) throw new Error('No access token found');
@@ -77,13 +79,13 @@ export function BookProvider({ children }: { children: React.ReactNode }) {
             if (!res.ok) throw new Error('Failed to fetch your books');
 
             const json = await res.json();
-            console.log(json)
-            return json.data.books;
+            return json.data.books; // ✅ success return
         } catch (err) {
             setError("Failed to load books");
             console.error(err);
+            return null; // ✅ catch return
         } finally {
-            setLoading(false);
+            setLoading(false); // ✅ still runs no matter what
         }
     };
 
